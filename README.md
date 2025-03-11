@@ -12,7 +12,7 @@ A smart real-time video chat platform with AI-powered content moderation for a s
 
 1. Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/arvindpandey4/ModChat.git
 ```
 
 2. Navigate to the project directory
