@@ -1,6 +1,6 @@
 # Mod Chat
 
-`ModChat: A smart real-time video chat platform with AI-powered content moderation for a safe and seamless communication experience.`
+ModChat: A smart real-time video chat platform with AI-powered content moderation for a safe and seamless communication experience.
 
 ## Prerequisites
 
