@@ -1,14 +1,16 @@
 const socket = io();
 const roomId = new URLSearchParams(window.location.search).get('room');
+const vmSocket = io('http://34.46.114.62:3001');
 let localStream = null;
 let peerConnection = null;
 
 const peerConfig = {
     iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' }
+        { urls: "stun:stun.l.google.com:19302" },  // Google's STUN
+        { urls: "turn:34.46.114.62:3478", username: "webrtcuser", credential: "strongpassword123" } // Our GCP TURN server
     ]
 };
+
 
 const RoomState = {
     CREATOR: 'CREATOR',
@@ -177,6 +179,40 @@ async function initialize() {
         updateStatus('Failed to initialize: ' + error.message, 'error');
     }
 }
+
+function captureFrame(videoElement) {
+    if (!videoElement || videoElement.videoWidth === 0) return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/jpeg');  // Convert to Base64
+}
+
+
+// Send Frames to VM for Analysis
+function sendFramesToVM() {
+    if (localVideo.readyState === 4) {
+        const localFrame = captureFrame(localVideo);
+        if (localFrame) {
+            vmSocket.emit('frame', { roomId, type: 'local', data: localFrame });
+        }
+    }
+
+    document.querySelectorAll('#remoteVideo').forEach(remoteVideo => {
+        if (remoteVideo.readyState === 4) {
+            const remoteFrame = captureFrame(remoteVideo);
+            if (remoteFrame) {
+                vmSocket.emit('frame', { roomId, type: 'remote', data: remoteFrame });
+            }
+        }
+    });
+}
+// Send frames every 500ms
+setInterval(sendFramesToVM, 500);
+
+
 
 // Add to your room.js file
 socket.on('error', (error) => {
