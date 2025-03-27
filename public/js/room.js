@@ -7,7 +7,7 @@ let peerConnection = null;
 const peerConfig = {
     iceServers: [
         { urls: "stun:stun.l.google.com:19302" },  // Google's STUN
-        { urls: "turn:34.46.114.62:3478", username: "webrtcuser", credential: "strongpassword123" } // Our GCP TURN server
+        { urls: "turn:34.46.114.62:3478", username: "webrtcuser", credential: "ENTER YOUR PWD" } // Our GCP TURN server
     ]
 };
 
